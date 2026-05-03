@@ -1,0 +1,55 @@
+# ========== 敏感配置（严禁提交） ==========
+.env
+*.env
+!.env.example
+
+# ========== Python ==========
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ========== 虚拟环境 ==========
+.venv/
+venv/
+env/
+ENV/
+
+# ========== 数据缓存（任务库、生成的反讽图） ==========
+.data/
+**/.data/
+
+# ========== 构建产物 ==========
+dist/
+build/
+*.egg-info/
+
+# ========== 编辑器 / 系统 ==========
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ========== Playwright 浏览器二进制（首次运行下载） ==========
+ms-playwright/
+
+# ========== 项目根的运维工具二进制（用户自己下载） ==========
+cloudflared
+cloudflared.exe
+ngrok
+ngrok.exe
+
+# ========== 节点（如果未来加 Next.js 前端） ==========
+node_modules/
+.next/
+.nuxt/
+
+# ========== 日志 ==========
+*.log
+logs/

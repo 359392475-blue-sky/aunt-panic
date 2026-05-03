@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>二舅妈急了 · AI 反讽辟谣</title>
+<meta name="description" content="把家族群假消息一键反转成反讽辟谣内容" />
+
+<!-- Open Graph：微信、Telegram 等分享时抓卡片信息 -->
+<meta property="og:title" content="二舅妈急了 · AI 反讽辟谣" />
+<meta property="og:description" content="把家族群假消息一键反转成反讽辟谣内容" />
+<meta property="og:image" content="{{BASE_URL}}/logo.png" />
+<meta property="og:image:width" content="1240" />
+<meta property="og:image:height" content="1240" />
+<meta property="og:url" content="{{BASE_URL}}/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="二舅妈急了" />
+
+<!-- 微信特定 meta -->
+<meta itemprop="name" content="二舅妈急了 · AI 反讽辟谣" />
+<meta itemprop="description" content="把家族群假消息一键反转成反讽辟谣内容" />
+<meta itemprop="image" content="{{BASE_URL}}/logo.png" />
+
+<!-- Twitter Card 备用 -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="二舅妈急了 · AI 反讽辟谣" />
+<meta name="twitter:description" content="把家族群假消息一键反转成反讽辟谣内容" />
+<meta name="twitter:image" content="{{BASE_URL}}/logo.png" />
+
+<link rel="icon" type="image/png" href="/logo.png" />
+<link rel="apple-touch-icon" href="/logo.png" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+                 "PingFang SC", "Microsoft YaHei", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .progress-bar { transition: width .3s ease-out; }
+  .toast-fade { animation: fade .25s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translate(-50%, -55%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- 视图 1: 粘贴页 -->
+<div id="view-粘贴" class="max-w-md mx-auto pb-32">
+
+  <!-- 顶部 hero 示例图 -->
+  <div class="px-3 pt-3">
+    <img
+      src="/hero.jpg"
+      alt="家族群反讽辟谣示例"
+      class="w-full rounded-2xl shadow-md select-none"
+      draggable="false"
+    />
+  </div>
+
+  <!-- 输入框 -->
+  <div class="px-4 mt-5">
+    <div class="bg-white rounded-2xl shadow-sm p-4">
+      <textarea
+        id="输入框"
+        placeholder="粘贴需要回击的任意公众号链接或者文本，AI 将会生成观点完全相反的&quot;专家&quot;推文"
+        class="w-full h-36 px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400 resize-none leading-relaxed"
+      ></textarea>
+      <div id="模式提示" class="text-xs text-gray-400 text-center mt-2 leading-relaxed h-4"></div>
+    </div>
+  </div>
+
+  <div class="px-6 mt-4 text-xs text-gray-400 leading-relaxed text-center">
+    AI 生成内容含强制反讽水印，仅供个人媒介素养训练。
+  </div>
+</div>
+
+<!-- 粘贴页底部固定按钮 -->
+<div id="粘贴页底部按钮" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t shadow-lg p-4 z-30">
+  <div class="max-w-md mx-auto">
+    <button
+      id="btn-提交"
+      onclick="提交()"
+      class="w-full bg-red-600 active:bg-red-700 text-white font-bold py-4 rounded-xl active:scale-[.98] transition text-base shadow-sm"
+    >
+      生成反驳文档，打击虚假信息
+    </button>
+  </div>
+</div>
+
+<!-- 视图 2: 等待页（同时介绍项目） -->
+<div id="view-等待" class="hidden max-w-md mx-auto px-6 pt-12 pb-12">
+
+  <!-- 加载动画 + 状态 -->
+  <div class="text-center mb-10">
+    <div class="inline-block w-16 h-16 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mb-6"></div>
+    <h2 id="状态文字" class="text-lg font-semibold text-gray-800 mb-2">解析原文中...</h2>
+    <p id="状态描述" class="text-sm text-gray-500 mb-6 px-4">正在抓取并结构化原文内容</p>
+    <div class="bg-gray-200 rounded-full h-2 max-w-xs mx-auto overflow-hidden">
+      <div id="进度条" class="progress-bar h-full bg-red-600" style="width:10%"></div>
+    </div>
+    <p class="text-xs text-gray-400 mt-4">这个过程通常需要 15-30 秒</p>
+  </div>
+
+  <!-- 项目介绍 -->
+  <div class="border-t border-gray-200 pt-8 mt-2">
+    <div class="text-center mb-6">
+      <img src="/logo.png" alt="二舅妈急了" class="w-16 h-16 mx-auto rounded-2xl shadow mb-3 select-none" draggable="false" />
+      <h3 class="text-base font-bold text-gray-800">关于「二舅妈急了」</h3>
+    </div>
+
+    <div class="space-y-4 text-sm text-gray-600 leading-relaxed px-1">
+      <p>家族群里的"伪权威"养生谣言、阴谋论、震惊体，正面反驳容易引发家庭矛盾。<strong class="text-gray-800">不如以毒攻毒。</strong></p>
+
+      <p>我们用 AI 生成立场完全相反的"专家"反讽内容，让长辈在群里收到<strong class="text-gray-800">和原文一模一样形态的反向版本</strong>，体验"被假权威信息包围"的荒谬。</p>
+
+      <div class="border-l-4 border-amber-500 bg-amber-50 px-4 py-3.5 rounded-r-lg mt-3">
+        <p class="text-amber-900 font-bold mb-2 text-sm">⚠️ 一个长辈值得知道的事实</p>
+        <p class="text-xs text-amber-900 leading-relaxed">
+          过去报纸、电视上的内容，要经过编辑、审校、播出审核，造假门槛很高。
+        </p>
+        <p class="text-xs text-amber-900 leading-relaxed mt-2">
+          <strong>现在不一样了。</strong>AI 几秒钟就能伪造一篇带"专家口述""最新研究"字样的图文文章——只需要几行字提示。
+        </p>
+        <p class="text-xs text-amber-900 leading-relaxed mt-2 font-semibold">
+          凡是无来源、无作者署名、无机构出处的"权威"消息，都不可轻信。
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 视图 3: 结果页（包含长图模式 + 文本模式两种内部 UI） -->
+<div id="view-结果" class="hidden max-w-md mx-auto px-3 pt-4 pb-32">
+
+  <!-- 3a: 长图模式 -->
+  <div id="结果-长图模式" class="hidden">
+    <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-3 text-center">
+      <div class="text-red-600 font-bold text-base">⬇ 长按下方图片 → 选择"复制图片"</div>
+      <div class="text-red-500 text-xs mt-1">然后去家族群里长按输入框粘贴</div>
+    </div>
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <img id="长图" src="" class="w-full block" alt="反讽长图" draggable="false"
+           style="-webkit-touch-callout: default; -webkit-user-select: none;" />
+    </div>
+  </div>
+
+  <!-- 3b: 文本模式 -->
+  <div id="结果-文本模式" class="hidden">
+    <div class="bg-orange-50 border border-orange-200 rounded-lg px-4 py-3 mb-3 text-center">
+      <div class="text-orange-600 font-bold text-base">⬇ 点下方"复制全文" → 粘贴到家族群</div>
+    </div>
+    <div class="bg-white rounded-xl shadow p-4">
+      <textarea
+        id="反讽文本框"
+        readonly
+        class="w-full h-[60vh] text-sm text-gray-700 border-0 focus:outline-none resize-none leading-relaxed bg-transparent"
+      ></textarea>
+    </div>
+  </div>
+
+  <!-- 底部固定按钮区 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t shadow-lg p-4 z-30">
+    <div class="max-w-md mx-auto space-y-2">
+      <div
+        id="btn-长图复制"
+        class="hidden w-full bg-red-50 border-2 border-red-300 text-red-700 font-bold py-3.5 rounded-xl text-center text-base select-none"
+      >
+        ⬇ 长按屏幕复制图片
+      </div>
+      <button
+        id="btn-复制"
+        onclick="复制文本()"
+        class="hidden w-full bg-red-600 active:bg-red-700 text-white font-bold py-4 rounded-xl active:scale-[.98] transition text-base shadow-sm"
+      >
+        复制全文
+      </button>
+      <button
+        onclick="重新开始()"
+        id="btn-下一篇"
+        class="w-full bg-white border border-gray-300 text-gray-700 font-medium py-3 rounded-xl active:scale-[.98] transition text-sm"
+      >
+        反讽下一篇
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 视图 4: 错误页 -->
+<div id="view-错误" class="hidden max-w-md mx-auto px-6 pt-32 text-center">
+  <div class="text-5xl mb-4">😅</div>
+  <h2 class="text-lg font-semibold text-gray-800 mb-2">生成失败</h2>
+  <p id="错误信息" class="text-sm text-gray-500 mb-6 break-words"></p>
+  <button onclick="重新开始()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-medium">
+    返回重试
+  </button>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/85 text-white text-sm px-5 py-3 rounded-full hidden z-50 max-w-[80vw] text-center"></div>
+
+<script>
+const 状态映射 = {
+  pending:    { 文字: "排队中...",         描述: "任务已提交" },
+  parsing:    { 文字: "解析原文...",       描述: "正在抓取并结构化原文" },
+  filtering:  { 文字: "安全检查...",       描述: "扫描禁区词库" },
+  generating: { 文字: "AI 反向创作中...",  描述: "正在生成立场相反的版本" },
+  composing:  { 文字: "排版中...",         描述: "整理输出格式" },
+  rendering:  { 文字: "渲染长图...",       描述: "正在合成最终长图" },
+  storing:    { 文字: "即将完成...",       描述: "保存到图床" },
+  done:       { 文字: "完成!",             描述: "" },
+  failed:     { 文字: "失败",              描述: "" },
+};
+
+let 当前任务id = null;
+let 轮询定时器 = null;
+
+function 切视图(id) {
+  ['view-粘贴', 'view-等待', 'view-结果', 'view-错误'].forEach(v => {
+    document.getElementById(v).classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+
+  const 粘贴底部 = document.getElementById('粘贴页底部按钮');
+  if (id === 'view-粘贴') {
+    粘贴底部.classList.remove('hidden');
+  } else {
+    粘贴底部.classList.add('hidden');
+  }
+}
+
+function showToast(msg, ms = 2200) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  t.classList.remove('toast-fade'); void t.offsetWidth; t.classList.add('toast-fade');
+  setTimeout(() => t.classList.add('hidden'), ms);
+}
+
+const 输入框 = document.getElementById('输入框');
+输入框.addEventListener('input', () => {
+  const v = 输入框.value.trim();
+  const tip = document.getElementById('模式提示');
+  if (!v) { tip.textContent = ''; return; }
+  if (/^https?:\/\//i.test(v)) {
+    tip.innerHTML = '<span class="text-blue-500">🔗 检测到链接 → 将生成反讽长图</span>';
+  } else {
+    tip.innerHTML = '<span class="text-purple-500">📝 检测到文字 → 将生成可复制的反讽文</span>';
+  }
+});
+
+async function 提交() {
+  const v = 输入框.value.trim();
+  if (!v) {
+    showToast('请粘贴文章链接或文字内容');
+    return;
+  }
+  if (v.length < 10 && !/^https?:\/\//i.test(v)) {
+    showToast('文字内容太短,至少 10 个字');
+    return;
+  }
+  const btn = document.getElementById('btn-提交');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+  try {
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: v }),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    当前任务id = data.task_id;
+    切视图('view-等待');
+    开始轮询();
+  } catch (e) {
+    showToast('提交失败: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '生成反驳文档，打击虚假信息';
+  }
+}
+
+function 开始轮询() {
+  停止轮询();
+  let 错误次数 = 0;
+  轮询定时器 = setInterval(async () => {
+    try {
+      const r = await fetch('/api/status/' + 当前任务id);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      const m = 状态映射[data.status] || { 文字: data.status, 描述: '' };
+      document.getElementById('状态文字').textContent = m.文字;
+      document.getElementById('状态描述').textContent = m.描述;
+      document.getElementById('进度条').style.width = (data.progress || 0) + '%';
+
+      if (data.status === 'done') {
+        停止轮询();
+        显示结果(data);
+      } else if (data.status === 'failed') {
+        停止轮询();
+        document.getElementById('错误信息').textContent = data.error || '未知错误';
+        切视图('view-错误');
+      }
+      错误次数 = 0;
+    } catch (e) {
+      错误次数++;
+      if (错误次数 > 5) {
+        停止轮询();
+        document.getElementById('错误信息').textContent = '连接服务器失败,请检查网络';
+        切视图('view-错误');
+      }
+    }
+  }, 1500);
+}
+
+function 显示结果(data) {
+  const 长图区 = document.getElementById('结果-长图模式');
+  const 文本区 = document.getElementById('结果-文本模式');
+  const 文本复制按钮 = document.getElementById('btn-复制');
+  const 长图复制按钮 = document.getElementById('btn-长图复制');
+
+  if (data.mode === 'text') {
+    长图区.classList.add('hidden');
+    文本区.classList.remove('hidden');
+    文本复制按钮.classList.remove('hidden');
+    长图复制按钮.classList.add('hidden');
+    document.getElementById('反讽文本框').value = data.text_content || '';
+  } else {
+    文本区.classList.add('hidden');
+    长图区.classList.remove('hidden');
+    文本复制按钮.classList.add('hidden');
+    长图复制按钮.classList.remove('hidden');
+    document.getElementById('长图').src = data.image_url + '?t=' + Date.now();
+  }
+  切视图('view-结果');
+}
+
+function 停止轮询() {
+  if (轮询定时器) { clearInterval(轮询定时器); 轮询定时器 = null; }
+}
+
+async function 复制文本() {
+  const t = document.getElementById('反讽文本框');
+  const v = t.value;
+  try {
+    await navigator.clipboard.writeText(v);
+    showToast('已复制 ✓ 粘贴到家族群即可', 2500);
+  } catch (e) {
+    t.select();
+    try {
+      document.execCommand('copy');
+      showToast('已复制 ✓ 粘贴到家族群即可', 2500);
+    } catch (e2) {
+      showToast('请手动选中文字复制', 2500);
+    }
+  }
+}
+
+function 重新开始() {
+  停止轮询();
+  当前任务id = null;
+  输入框.value = '';
+  document.getElementById('模式提示').textContent = '';
+  document.getElementById('btn-提交').disabled = false;
+  document.getElementById('btn-提交').textContent = '生成反驳文档，打击虚假信息';
+  切视图('view-粘贴');
+}
+</script>
+</body>
+</html>

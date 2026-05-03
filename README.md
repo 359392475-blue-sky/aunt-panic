@@ -80,7 +80,7 @@
 ### 安装
 
 ```bash
-git clone https://github.com/<你的用户名>/aunt-panic.git
+git clone https://github.com/359392475-blue-sky/aunt-panic.git
 cd aunt-panic/源码/后端
 
 pip install fastapi "uvicorn[standard]" httpx pydantic pydantic-settings \

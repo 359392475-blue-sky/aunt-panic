@@ -9,6 +9,8 @@
 把"伪权威"养生谣言一键反转成立场完全相反的"专家"反讽内容，<br/>
 用相同形态发回家族群——以毒攻毒，让长辈感受被假权威信息包围的荒谬。
 
+**English summary:** Aunt Panic is an open-source media-literacy satire tool for Chinese family-chat misinformation. It takes a viral health-rumor article or pasted message, generates a clearly marked opposite-position satire version, and injects warnings so the output is understood as AI-generated media-literacy material, not a fact-checking authority.
+
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![DeepSeek](https://img.shields.io/badge/LLM-DeepSeek-0F8FE8)](https://api.deepseek.com)
@@ -65,6 +67,19 @@
 - 📋 **纯文本输出**：粘贴文字时输出可复制纯文本，秒发群里
 - 🚦 **政治内容拦截**：仅拦政治禁区，养生/食品/保健品类放行（项目核心反讽对象）
 - 💰 **成本低廉**：单次生成约 ¥0.03（DeepSeek API），月运营 < ¥50
+
+---
+
+## 🛡️ 安全与伦理边界
+
+本项目不是专业事实核查机构、医疗建议工具、法律建议工具或新闻机构。输出内容必须被视为 **AI 生成的反讽媒介素养材料**，分享前需要人工检查。
+
+- 不要移除 AI 生成标识、反讽说明、水印或底部警示语
+- 不要用于政治、宗教、民族、身份攻击或大规模传播
+- 不要用于骚扰特定个人或机构
+- 不要把生成内容包装成真实新闻、权威建议或专业事实核查结论
+
+完整说明见 [USAGE_POLICY.md](USAGE_POLICY.md)。
 
 ---
 
@@ -298,7 +313,7 @@ POST /api/generate {input: ...}
 
 [MIT](LICENSE) © 2026 二舅妈急了 项目贡献者
 
-License 中包含**伦理使用声明**，使用前请阅读。
+负责任使用边界见 [USAGE_POLICY.md](USAGE_POLICY.md)。
 
 ---
 
